@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pawan Kumar Jain — 3D Resume</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background:
+      radial-gradient(circle at top left, rgba(56,189,248,0.14), transparent 22%),
+      radial-gradient(circle at top right, rgba(168,85,247,0.12), transparent 20%),
+      linear-gradient(180deg, #f7fbff 0%, #eef4ff 52%, #f8fbff 100%);
+    color: #0f172a;
+    overflow-x: hidden;
+  }
+  .font-display { font-family: 'Oswald', sans-serif; }
+
+  #three-canvas {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0; pointer-events: none; opacity: 0.32; filter: saturate(0.8);
+  }
+
+  .content-layer { position: relative; z-index: 10; }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0; transform: translateY(60px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.active { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+  .reveal-delay-5 { transition-delay: 0.5s; }
+
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(to right, #60A5FA, #818CF8, #C084FC);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .gradient-text-flow {
+    background: linear-gradient(90deg, #2563eb 0%, #7c3aed 48%, #db2777 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glass card */
+  .glass {
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(148,163,184,0.2);
+    box-shadow: 0 18px 50px rgba(148,163,184,0.18);
+  }
+  .glass-hover:hover {
+    border-color: rgba(59,130,246,0.22);
+    box-shadow: 0 18px 60px rgba(59,130,246,0.12);
+    transform: translateY(-4px);
+  }
+
+  /* Skill tag */
+  .skill-tag {
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.2);
+    color: #60A5FA;
+    padding: 6px 16px; border-radius: 9999px; font-size: 13px;
+    font-weight: 500; transition: all 0.3s;
+  }
+  .skill-tag:hover {
+    background: rgba(59,130,246,0.2);
+    border-color: rgba(59,130,246,0.5);
+    transform: scale(1.05);
+    box-shadow: 0 0 12px rgba(59,130,246,0.2);
+  }
+
+  /* Timeline */
+  .timeline-line {
+    position: absolute; left: 23px; top: 0; bottom: 0; width: 2px;
+    background: linear-gradient(to bottom, #2563EB, #4F46E5, #7C3AED, transparent);
+  }
+  .timeline-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #3B82F6; border: 2px solid #f7fbff;
+    box-shadow: 0 0 10px rgba(59,130,246,0.6);
+    position: absolute; left: 18px; top: 8px;
+  }
+
+  /* Nav */
+  .nav-glass {
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(148,163,184,0.16);
+    box-shadow: 0 10px 40px rgba(148,163,184,0.12);
+  }
+  .nav-link {
+    color: #475569; font-size: 13px; font-weight: 500;
+    transition: color 0.3s; position: relative;
+  }
+  .nav-link:hover, .nav-link.active { color: #0f172a; }
+  .nav-link.active::after {
+    content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+    height: 2px; background: #3B82F6; border-radius: 1px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #e2e8f0; }
+  ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+  /* Stat counter */
+  .stat-number {
+    font-family: 'Oswald', sans-serif;
+    font-size: 48px; font-weight: 700;
+    background: linear-gradient(to right, #60A5FA, #C084FC);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  /* Floating label */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  .float-anim { animation: float 4s ease-in-out infinite; }
+  .float-anim-delay { animation: float 4s ease-in-out 1s infinite; }
+  .float-anim-delay-2 { animation: float 4s ease-in-out 2s infinite; }
+
+  /* Pulse ring */
+  @keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+  .pulse-ring::before {
+    content: ''; position: absolute; inset: -4px;
+    border-radius: 50%; border: 2px solid #3B82F6;
+    animation: pulse-ring 2s ease-out infinite;
+  }
+
+  /* Project card glow */
+  .project-glow {
+    position: relative; overflow: hidden;
+  }
+  .project-glow::before {
+    content: ''; position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.5s;
+  }
+  .project-glow:hover::before { opacity: 1; }
+
+  /* Mobile menu */
+  .mobile-menu {
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+  }
+  .mobile-menu.open { transform: translateX(0); }
+
+  /* Section divider */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(59,130,246,0.3), transparent);
+  }
+
+  /* Cert badge */
+  .cert-badge {
+    background: linear-gradient(135deg, rgba(255,255,255,0.76), rgba(240,249,255,0.92));
+    border: 1px solid rgba(59,130,246,0.14);
+  }
+
+  /* Hero name */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-anim-1 { animation: slideUp 0.8s ease 0.2s both; }
+  .hero-anim-2 { animation: slideUp 0.8s ease 0.4s both; }
+  .hero-anim-3 { animation: slideUp 0.8s ease 0.6s both; }
+  .hero-anim-4 { animation: slideUp 0.8s ease 0.8s both; }
+  .hero-anim-5 { animation: slideUp 0.8s ease 1.0s both; }
+  .section-glow {
+    position: absolute;
+    width: 340px;
+    height: 340px;
+    border-radius: 9999px;
+    filter: blur(90px);
+    opacity: 0.22;
+    pointer-events: none;
+  }
+  .glow-purple {
+    top: 60px;
+    right: max(4%, 24px);
+    background: radial-gradient(circle, rgba(168,85,247,0.9) 0%, rgba(59,130,246,0.45) 45%, transparent 72%);
+  }
+  .card-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.45s ease, box-shadow 0.45s ease, border-color 0.45s ease;
+  }
+  .card-3d:hover {
+    transform: translateY(-10px) rotateX(6deg) rotateY(-6deg);
+  }
+  .glass-glow {
+    background: rgba(255,255,255,0.82);
+    border: 1px solid rgba(148,163,184,0.2);
+    box-shadow: 0 22px 55px rgba(15,23,42,0.08);
+    backdrop-filter: blur(14px);
+  }
+  .glass-glow:hover {
+    box-shadow: 0 26px 65px rgba(59,130,246,0.15);
+    border-color: rgba(96,165,250,0.28);
+  }
+  .hero-stage {
+    position: relative;
+    perspective: 1400px;
+  }
+  .hero-stage::before {
+    content: '';
+    position: absolute;
+    inset: 8% 14%;
+    border-radius: 32px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.14));
+    border: 1px solid rgba(148,163,184,0.18);
+    box-shadow: 0 35px 80px rgba(59,130,246,0.08);
+    transform: rotateX(9deg);
+    pointer-events: none;
+  }
+  .hero-orbit,
+  .hero-orbit-two,
+  .hero-grid-plane,
+  .hero-beam {
+    position: absolute;
+    pointer-events: none;
+  }
+  .hero-orbit {
+    inset: 6% 18%;
+    border: 1px solid rgba(59,130,246,0.18);
+    border-radius: 9999px;
+    animation: spinOrbit 16s linear infinite;
+  }
+  .hero-orbit-two {
+    inset: 18% 8%;
+    border: 1px solid rgba(168,85,247,0.16);
+    border-radius: 9999px;
+    transform: rotateX(74deg);
+    animation: spinOrbitReverse 18s linear infinite;
+  }
+  .hero-grid-plane {
+    left: 50%;
+    bottom: -12px;
+    width: min(720px, 88vw);
+    height: 220px;
+    transform: translateX(-50%) rotateX(74deg);
+    transform-origin: center top;
+    background-image:
+      linear-gradient(rgba(59,130,246,0.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.12) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: linear-gradient(180deg, rgba(0,0,0,0.95), transparent 78%);
+  }
+  .hero-beam {
+    top: 0;
+    left: 50%;
+    width: 380px;
+    height: 380px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(59,130,246,0.18) 0%, rgba(168,85,247,0.09) 42%, transparent 72%);
+    filter: blur(18px);
+    animation: beamPulse 5s ease-in-out infinite;
+  }
+  .hero-chip-stack {
+    margin: 22px auto 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    max-width: 760px;
+  }
+  .hero-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 9999px;
+    background: rgba(255,255,255,0.72);
+    border: 1px solid rgba(96,165,250,0.18);
+    box-shadow: 0 18px 34px rgba(15,23,42,0.06);
+    color: #334155;
+    font-size: 12px;
+    font-weight: 600;
+    backdrop-filter: blur(12px);
+  }
+  .tilt-surface {
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .magnetic-btn {
+    will-change: transform;
+  }
+  .floating-node {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(59,130,246,0.85), rgba(168,85,247,0.65));
+    box-shadow: 0 0 0 10px rgba(59,130,246,0.06), 0 0 24px rgba(59,130,246,0.18);
+    animation: floatNode 5.6s ease-in-out infinite;
+  }
+  .floating-node.node-a { top: 18%; left: 16%; animation-delay: 0.2s; }
+  .floating-node.node-b { top: 30%; right: 12%; animation-delay: 1.2s; }
+  .floating-node.node-c { bottom: 18%; left: 22%; animation-delay: 2.2s; }
+  .floating-node.node-d { bottom: 24%; right: 18%; animation-delay: 0.8s; }
+  @keyframes spinOrbit {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes spinOrbitReverse {
+    from { transform: rotateX(74deg) rotate(360deg); }
+    to { transform: rotateX(74deg) rotate(0deg); }
+  }
+  @keyframes beamPulse {
+    0%, 100% { opacity: 0.68; transform: translateX(-50%) scale(0.96); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.08); }
+  }
+  @keyframes floatNode {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-14px) scale(1.08); }
+  }
+  .text-white { color: #0f172a !important; }
+  .text-gray-600 { color: #64748b !important; }
+  .text-gray-500 { color: #64748b !important; }
+  .text-gray-400 { color: #475569 !important; }
+  .text-gray-300 { color: #334155 !important; }
+  .border-gray-700 { border-color: rgba(100,116,139,0.35) !important; }
+  .border-white\/10 { border-color: rgba(148,163,184,0.28) !important; }
+  .hover\:border-white\/30:hover { border-color: rgba(100,116,139,0.48) !important; }
+  .bg-blue-600 { background-color: #2563eb !important; }
+  .hover\:bg-blue-500:hover { background-color: #3b82f6 !important; }
+  .section-divider {
+    background: linear-gradient(to right, transparent, rgba(59,130,246,0.22), transparent);
+  }
+</style>
+</head>
+<body>
+
+<!-- Three.js Canvas -->
+<canvas id="three-canvas"></canvas>
+
+<!-- Navigation -->
+<nav class="nav-glass fixed top-0 left-0 right-0 z-50 h-16 px-6 flex items-center justify-between">
+  <a href="#hero" class="font-display text-lg font-600 tracking-tight">
+    <span class="gradient-text">PKJ</span>
+  </a>
+  <div class="hidden md:flex items-center gap-8">
+    <a href="#about" class="nav-link" data-section="about">About</a>
+    <a href="#skills" class="nav-link" data-section="skills">Skills</a>
+    <a href="#experience" class="nav-link" data-section="experience">Experience</a>
+    <a href="#projects" class="nav-link" data-section="projects">Projects</a>
+    <a href="#certifications" class="nav-link" data-section="certifications">Certifications</a>
+    <a href="#contact" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold tracking-tight px-5 py-2.5 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/20">
+      Contact Me
+    </a>
+  </div>
+  <button id="menuBtn" class="md:hidden text-white">
+    <iconify-icon icon="lucide:menu" width="24"></iconify-icon>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mobileMenu" class="mobile-menu fixed top-0 right-0 bottom-0 w-72 z-50 glass p-8 flex flex-col gap-6">
+  <button id="closeMenu" class="self-end text-gray-400 hover:text-white">
+    <iconify-icon icon="lucide:x" width="24"></iconify-icon>
+  </button>
+  <a href="#about" class="text-gray-300 hover:text-white transition-colors mobile-link">About</a>
+  <a href="#skills" class="text-gray-300 hover:text-white transition-colors mobile-link">Skills</a>
+  <a href="#experience" class="text-gray-300 hover:text-white transition-colors mobile-link">Experience</a>
+  <a href="#projects" class="text-gray-300 hover:text-white transition-colors mobile-link">Projects</a>
+  <a href="#certifications" class="text-gray-300 hover:text-white transition-colors mobile-link">Certifications</a>
+  <a href="#contact" class="bg-blue-600 text-white text-center text-sm font-semibold px-5 py-3 rounded-lg mobile-link">Contact Me</a>
+</div>
+
+<!-- Content Layer -->
+<div class="content-layer">
+
+  <!-- ==================== HERO ==================== -->
+  <section id="hero" class="min-h-screen flex items-center justify-center px-6 pt-16 relative overflow-hidden">
+    <div class="hero-stage text-center max-w-5xl mx-auto">
+      <div class="hero-beam"></div>
+      <div class="hero-orbit"></div>
+      <div class="hero-orbit-two"></div>
+      <div class="hero-grid-plane"></div>
+      <span class="floating-node node-a"></span>
+      <span class="floating-node node-b"></span>
+      <span class="floating-node node-c"></span>
+      <span class="floating-node node-d"></span>
+      <!-- Floating badges -->
+      <div class="relative">
+        <div class="float-anim absolute -top-12 -left-8 md:left-16 glass rounded-full px-4 py-2 text-xs font-medium text-blue-400 flex items-center gap-2 tilt-surface">
+          <iconify-icon icon="lucide:brain-circuit" width="14"></iconify-icon>
+          AI & Automation
+        </div>
+        <div class="float-anim-delay absolute -top-8 -right-4 md:right-20 glass rounded-full px-4 py-2 text-xs font-medium text-purple-400 flex items-center gap-2 tilt-surface">
+          <iconify-icon icon="lucide:bar-chart-3" width="14"></iconify-icon>
+          Data Analytics
+        </div>
+        <div class="float-anim-delay-2 absolute -bottom-4 left-8 md:left-40 glass rounded-full px-4 py-2 text-xs font-medium text-green-400 flex items-center gap-2 tilt-surface">
+          <iconify-icon icon="lucide:rocket" width="14"></iconify-icon>
+          Product Management
+        </div>
+      </div>
+
+      <p class="hero-anim-1 text-[10px] font-semibold tracking-[0.3em] uppercase text-blue-400 mb-6">Business Analyst & Associate Product Manager</p>
+
+      <h1 class="hero-anim-2 font-display text-5xl md:text-7xl lg:text-8xl font-700 tracking-tighter leading-[0.9] mb-6">
+        <span class="text-white">PAWAN</span><br>
+        <span class="gradient-text">KUMAR JAIN</span>
+      </h1>
+
+      <p class="hero-anim-3 text-gray-400 text-sm md:text-base leading-relaxed max-w-2xl mx-auto mb-10">
+        10+ years building AI-driven SaaS products, automation systems, and scalable business solutions across EdTech, E-commerce, and digital platforms.
+      </p>
+
+      <div class="hero-chip-stack hero-anim-3">
+        <span class="hero-chip tilt-surface"><iconify-icon icon="lucide:bot" width="14" class="text-blue-500"></iconify-icon>AI-driven platforms</span>
+        <span class="hero-chip tilt-surface"><iconify-icon icon="lucide:workflow" width="14" class="text-violet-500"></iconify-icon>Workflow automation</span>
+        <span class="hero-chip tilt-surface"><iconify-icon icon="lucide:users-round" width="14" class="text-cyan-500"></iconify-icon>CRM systems</span>
+        <span class="hero-chip tilt-surface"><iconify-icon icon="lucide:layout-panel-top" width="14" class="text-pink-500"></iconify-icon>3D business websites</span>
+      </div>
+
+      <div class="hero-anim-4 flex flex-wrap items-center justify-center gap-4 mb-12">
+        <a href="#contact" class="magnetic-btn bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold tracking-tight px-8 py-3.5 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25 flex items-center gap-2">
+          <iconify-icon icon="lucide:mail" width="16"></iconify-icon>
+          Get In Touch
+        </a>
+        <a href="#projects" class="magnetic-btn border border-white/10 hover:border-white/30 text-white text-sm font-semibold tracking-tight px-8 py-3.5 rounded-lg transition-all duration-300 hover:scale-105 flex items-center gap-2">
+          <iconify-icon icon="lucide:folder-open" width="16"></iconify-icon>
+          View Projects
+        </a>
+      </div>
+
+      <!-- Social Links -->
+      <div class="hero-anim-5 flex items-center justify-center gap-5">
+        <a href="mailto:pkoffice1994@gmail.com" class="text-gray-500 hover:text-blue-400 transition-colors duration-300" title="Email">
+          <iconify-icon icon="lucide:mail" width="20"></iconify-icon>
+        </a>
+        <a href="https://linkedin.com/in/pawan-kumar-jain-ab19a0217" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300" title="LinkedIn">
+          <iconify-icon icon="lucide:linkedin" width="20"></iconify-icon>
+        </a>
+        <a href="https://neuralflow-gold.vercel.app" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300" title="Portfolio">
+          <iconify-icon icon="lucide:globe" width="20"></iconify-icon>
+        </a>
+        <a href="tel:8504980839" class="text-gray-500 hover:text-blue-400 transition-colors duration-300" title="Phone">
+          <iconify-icon icon="lucide:phone" width="20"></iconify-icon>
+        </a>
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="mt-16 flex flex-col items-center gap-2 text-gray-600">
+        <span class="text-[10px] tracking-[0.2em] uppercase">Scroll to explore</span>
+        <div class="w-5 h-8 rounded-full border border-gray-700 flex items-start justify-center p-1">
+          <div class="w-1 h-2 bg-gray-500 rounded-full" style="animation: float 2s ease-in-out infinite;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== STATS ==================== -->
+  <section class="py-16 px-6">
+    <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="reveal glass rounded-2xl p-6 text-center">
+        <div class="stat-number" data-target="10">0</div>
+        <div class="text-[10px] tracking-[0.2em] uppercase text-gray-500 mt-2">Years Experience</div>
+      </div>
+      <div class="reveal reveal-delay-1 glass rounded-2xl p-6 text-center">
+        <div class="stat-number" data-target="50">0</div>
+        <div class="text-[10px] tracking-[0.2em] uppercase text-gray-500 mt-2">Projects Delivered</div>
+      </div>
+      <div class="reveal reveal-delay-2 glass rounded-2xl p-6 text-center">
+        <div class="stat-number" data-target="40">0</div>
+        <div class="text-[10px] tracking-[0.2em] uppercase text-gray-500 mt-2">% Efficiency Gain</div>
+      </div>
+      <div class="reveal reveal-delay-3 glass rounded-2xl p-6 text-center">
+        <div class="stat-number" data-target="30">0</div>
+        <div class="text-[10px] tracking-[0.2em] uppercase text-gray-500 mt-2">% Downtime Cut</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider max-w-5xl mx-auto"></div>
+
+  <!-- ==================== ABOUT ==================== -->
+  <section id="about" class="py-24 px-6">
+    <div class="max-w-5xl mx-auto grid md:grid-cols-12 gap-12 items-start">
+      <div class="md:col-span-4 reveal">
+        <p class="text-[10px] font-semibold tracking-[0.3em] uppercase text-blue-400 mb-3">About Me</p>
+        <h2 class="font-display text-3xl md:text-4xl font-600 tracking-tight leading-tight">
+          Building the<br><span class="gradient-text">Future of AI</span>
+        </h2>
+      </div>
+      <div class="md:col-span-8 reveal reveal-delay-1">
+        <p class="text-gray-400 text-sm leading-relaxed mb-5">
+          Business Analyst & Associate Product Manager with over 10+ years of experience across EdTech, E-commerce, and digital platforms, specializing in building AI-driven SaaS products, automation systems, and scalable business solutions.
+        </p>
+        <p class="text-gray-400 text-sm leading-relaxed mb-5">
+          Proven expertise in designing and implementing CRM systems, lead management workflows, and AI-powered automation pipelines that enhance customer engagement, improve conversion rates, and streamline business operations.
+        </p>
+        <p class="text-gray-400 text-sm leading-relaxed mb-8">
+          Experienced in working within Agile environments (Scrum & Kanban), leading UAT cycles, managing stakeholder expectations, and delivering high-quality product releases. Adept at translating complex business requirements into practical, scalable, and revenue-focused solutions.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <div class="glass rounded-xl px-5 py-3 flex items-center gap-3">
+            <iconify-icon icon="lucide:map-pin" width="16" class="text-blue-400"></iconify-icon>
+            <span class="text-sm text-gray-300">India, Remote</span>
+          </div>
+          <div class="glass rounded-xl px-5 py-3 flex items-center gap-3">
+            <iconify-icon icon="lucide:graduation-cap" width="16" class="text-purple-400"></iconify-icon>
+            <span class="text-sm text-gray-300">B.Tech — IET Alwar</span>
+          </div>
+          <div class="glass rounded-xl px-5 py-3 flex items-center gap-3">
+            <iconify-icon icon="lucide:languages" width="16" class="text-green-400"></iconify-icon>
+            <span class="text-sm text-gray-300">Hindi, English, German</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider max-w-5xl mx-auto"></div>
+
+  <!-- ==================== SKILLS ==================== -->
+  <section id="skills" class="py-24 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <p class="text-[10px] font-semibold tracking-[0.3em] uppercase text-blue-400 mb-3">Technical Arsenal</p>
+        <h2 class="font-display text-3xl md:text-4xl font-600 tracking-tight">Skills & <span class="gradient-text">Technologies</span></h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- AI & Automation -->
+        <div class="reveal glass rounded-2xl p-8 glass-hover transition-all duration-300 cursor-default">
+          <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-5">
+            <iconify-icon icon="lucide:brain-circuit" width="24" class="text-blue-400"></iconify-icon>
+          </div>
+          <h3 class="font-display text-lg font-600 tracking-tight mb-4">AI & Automation</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">AI Agents & LLM</span>
+            <span class="skill-tag">OpenAI API</span>
+            <span class="skill-tag">Prompt Engineering</span>
+            <span class="skill-tag">Workflow Automation</span>
+            <span class="skill-tag">WhatsApp Automation</span>
+          </div>
+        </div>
+
+        <!-- Development -->
+        <div class="reveal reveal-delay-1 glass rounded-2xl p-8 glass-hover transition-all duration-300 cursor-default">
+          <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-5">
+            <iconify-icon icon="lucide:code-2" width="24" class="text-purple-400"></iconify-icon>
+          </div>
+          <h3 class="font-display text-lg font-600 tracking-tight mb-4">Development</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">SaaS Development</span>
+            <span class="skill-tag">Full Stack</span>
+            <span class="skill-tag">REST API</span>
+            <span class="skill-tag">CI/CD</span>
+            <span class="skill-tag">Git & GitHub</span>
+          </div>
+        </div>
+
+        <!-- Data & Cloud -->
+        <div class="reveal reveal-delay-2 glass rounded-2xl p-8 glass-hover transition-all duration-300 cursor-default">
+          <div class="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-5">
+            <iconify-icon icon="lucide:database" width="24" class="text-green-400"></iconify-icon>
+          </div>
+          <h3 class="font-display text-lg font-600 tracking-tight mb-4">Data & Cloud</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">PostgreSQL</span>
+            <span class="skill-tag">MongoDB</span>
+            <span class="skill-tag">SQL</span>
+            <span class="skill-tag">Power BI</span>
+            <span class="skill-tag">AWS / GCP</span>
+          </div>
+        </div>
+
+        <!-- Product -->
+        <div class="reveal glass rounded-2xl p-8 glass-hover transition-all duration-300 cursor-default">
+          <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-5">
+            <iconify-icon icon="lucide:layout-dashboard" width="24" class="text-orange-400"></iconify-icon>
+          </div>
+          <h3 class="font-display text-lg font-600 tracking-tight mb-4">Product Management</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">Agile / Scrum</span>
+            <span class="skill-tag">Kanban</span>
+            <span class="skill-tag">Stakeholder Mgmt</span>
+            <span class="skill-tag">UAT & Release</span>
+          </div>
+        </div>
+
+        <!-- CRM -->
+        <div class="reveal reveal-delay-1 glass rounded-2xl p-8 glass-hover transition-all duration-300 cursor-default">
+          <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-5">
+            <iconify-icon icon="lucide:users" width="24" class="text-cyan-400"></iconify-icon>
+          </div>
+          <h3 class="font-display text-lg font-600 tracking-tight mb-4">CRM & Business</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">CRM Systems</span>
+            <span class="skill-tag">Lead Management</span>
+            <span class="skill-tag">Digital Marketing</span>
+            <span class="skill-tag">RCA</span>
+          </div>
+        </div>
+
+        <!-- Analysis -->
+        <div class="reveal reveal-delay-2 glass rounded-2xl p-8 glass-hover transition-all duration-300 cursor-default">
+          <div class="w-12 h-12 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center mb-5">
+            <iconify-icon icon="lucide:search-check" width="24" class="text-pink-400"></iconify-icon>
+          </div>
+          <h3 class="font-display text-lg font-600 tracking-tight mb-4">Analysis & Strategy</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">Requirement Gathering</span>
+            <span class="skill-tag">Data Analytics</span>
+            <span class="skill-tag">Dashboarding</span>
+            <span class="skill-tag">KPI Design</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider max-w-5xl mx-auto"></div>
+
+  <!-- ==================== EXPERIENCE ==================== -->
+  <section id="experience" class="py-24 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <p class="text-[10px] font-semibold tracking-[0.3em] uppercase text-blue-400 mb-3">Career Journey</p>
+        <h2 class="font-display text-3xl md:text-4xl font-600 tracking-tight">Work <span class="gradient-text">Experience</span></h2>
+      </div>
+
+      <div class="relative pl-14">
+        <div class="timeline-line"></div>
+
+        <!-- Experience 1 -->
+        <div class="reveal relative mb-14">
+          <div class="timeline-dot"></div>
+          <div class="glass rounded-2xl p-8 glass-hover transition-all duration-300">
+            <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+              <div>
+                <h3 class="font-display text-xl font-600 tracking-tight">Founder — AI Growth Systems</h3>
+                <p class="text-blue-400 text-sm font-medium mt-1">AI Automation & CRM Systems</p>
+              </div>
+              <div class="text-right">
+                <span class="glass rounded-full px-4 py-1.5 text-xs font-medium text-green-400">Current</span>
+                <p class="text-gray-500 text-xs mt-2">Nov 2025 · Remote, India</p>
+              </div>
+            </div>
+            <ul class="space-y-2.5">
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-blue-400 mt-0.5 shrink-0"></iconify-icon>
+                Built AI-powered CRM and automation systems for global clients
+              </li>
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-blue-400 mt-0.5 shrink-0"></iconify-icon>
+                Designed WhatsApp automation workflows for customer engagement & retention
+              </li>
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-blue-400 mt-0.5 shrink-0"></iconify-icon>
+                Developed AI-driven solutions to automate lead management and support systems
+              </li>
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-blue-400 mt-0.5 shrink-0"></iconify-icon>
+                Delivered scalable workflows for D2C, EdTech, and service-based businesses
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Experience 2 -->
+        <div class="reveal relative mb-14">
+          <div class="timeline-dot" style="top: 8px;"></div>
+          <div class="glass rounded-2xl p-8 glass-hover transition-all duration-300">
+            <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+              <div>
+                <h3 class="font-display text-xl font-600 tracking-tight">Business Analyst | Assoc. Product Manager</h3>
+                <p class="text-purple-400 text-sm font-medium mt-1">ALLEN Digital</p>
+              </div>
+              <div class="text-right">
+                <p class="text-gray-500 text-xs">Jul 2018 – Nov 2025 · Kota, Rajasthan</p>
+              </div>
+            </div>
+            <ul class="space-y-2.5">
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-purple-400 mt-0.5 shrink-0"></iconify-icon>
+                Performed advanced SQL-based analysis on large-scale student data
+              </li>
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-purple-400 mt-0.5 shrink-0"></iconify-icon>
+                Built automated Power BI dashboards for real-time reporting
+              </li>
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-purple-400 mt-0.5 shrink-0"></iconify-icon>
+                Reduced system downtime by <span class="text-white font-medium">30%</span> during national-level exams
+              </li>
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-purple-400 mt-0.5 shrink-0"></iconify-icon>
+                Developed automated data pipelines improving delivery speed by <span class="text-white font-medium">40%+</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-purple-400 mt-0.5 shrink-0"></iconify-icon>
+                Led UAT cycles and conducted root cause analysis using logs and monitoring tools
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Experience 3 -->
+        <div class="reveal relative mb-14">
+          <div class="timeline-dot" style="top: 8px; background: #4F46E5; box-shadow: 0 0 10px rgba(79,70,229,0.6);"></div>
+          <div class="glass rounded-2xl p-8 glass-hover transition-all duration-300">
+            <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+              <div>
+                <h3 class="font-display text-xl font-600 tracking-tight">Web Analyst</h3>
+                <p class="text-indigo-400 text-sm font-medium mt-1">ETOOS Education Pvt. Ltd.</p>
+              </div>
+              <div class="text-right">
+                <p class="text-gray-500 text-xs">Oct 2016 – Jun 2018 · Kota, Rajasthan</p>
+              </div>
+            </div>
+            <ul class="space-y-2.5">
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-indigo-400 mt-0.5 shrink-0"></iconify-icon>
+                Managed e-commerce platforms and digital content delivery systems
+              </li>
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-indigo-400 mt-0.5 shrink-0"></iconify-icon>
+                Analyzed user behavior and sales data to optimize marketing strategies
+              </li>
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-indigo-400 mt-0.5 shrink-0"></iconify-icon>
+                Collaborated with international teams to improve platform performance
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Experience 4 -->
+        <div class="reveal relative">
+          <div class="timeline-dot" style="top: 8px; background: #7C3AED; box-shadow: 0 0 10px rgba(124,58,237,0.6);"></div>
+          <div class="glass rounded-2xl p-8 glass-hover transition-all duration-300">
+            <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+              <div>
+                <h3 class="font-display text-xl font-600 tracking-tight">Business Analyst</h3>
+                <p class="text-violet-400 text-sm font-medium mt-1">GirnarSoft</p>
+              </div>
+              <div class="text-right">
+                <p class="text-gray-500 text-xs">Apr 2013 – Aug 2016 · Jaipur, Rajasthan</p>
+              </div>
+            </div>
+            <ul class="space-y-2.5">
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-violet-400 mt-0.5 shrink-0"></iconify-icon>
+                Optimized user journey and conversion across web and mobile platforms
+              </li>
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-violet-400 mt-0.5 shrink-0"></iconify-icon>
+                Supported lead generation teams with workflow automation
+              </li>
+              <li class="flex items-start gap-3 text-sm text-gray-400 leading-relaxed">
+                <iconify-icon icon="lucide:check-circle-2" width="16" class="text-violet-400 mt-0.5 shrink-0"></iconify-icon>
+                Designed internal tools for reporting and business process efficiency
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider max-w-5xl mx-auto"></div>
+
+  <!-- ==================== PROJECTS ==================== -->
+  <section id="projects" class="py-24 px-6 relative">
+
+    <div class="section-glow glow-purple"></div>
+
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <p class="text-[10px] font-semibold tracking-[0.3em] uppercase text-cyan-400 mb-3">
+          Portfolio
+        </p>
+        <h2 class="font-display text-4xl md:text-5xl font-700 tracking-tight">
+          Featured <span class="gradient-text-flow">Projects</span>
+        </h2>
+        <p class="text-gray-500 text-sm mt-4">
+          AI Platforms, Automation Systems & Business Websites
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div class="reveal project-card card-3d glass-glow rounded-3xl overflow-hidden group">
+          <div class="h-44 bg-gradient-to-br from-orange-500/20 via-amber-500/10 to-transparent flex items-center justify-center relative">
+            <iconify-icon icon="lucide:newspaper" width="60" class="text-orange-400/70 group-hover:scale-110 transition-all duration-500"></iconify-icon>
+            <div class="absolute top-4 right-4 bg-orange-500/10 border border-orange-400/20 px-3 py-1 rounded-full text-[10px] text-orange-500">
+              AI NEWS
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-display text-xl mb-2">AI News Portal</h3>
+            <p class="text-gray-400 text-sm leading-relaxed mb-5">
+              AI Auto Fetch News Platform with automated publishing & admin dashboard.
+            </p>
+            <a href="https://pkoffice1994.github.io/newportalwork/" target="_blank" class="inline-flex items-center gap-2 text-orange-500 hover:text-orange-400 text-sm font-semibold">
+              Live Demo
+              <iconify-icon icon="lucide:arrow-up-right" width="16"></iconify-icon>
+            </a>
+          </div>
+        </div>
+
+        <div class="reveal reveal-delay-1 project-card card-3d glass-glow rounded-3xl overflow-hidden group">
+          <div class="h-44 bg-gradient-to-br from-indigo-500/20 via-blue-500/10 to-transparent flex items-center justify-center relative">
+            <iconify-icon icon="lucide:graduation-cap" width="60" class="text-indigo-400/70 group-hover:scale-110 transition-all duration-500"></iconify-icon>
+            <div class="absolute top-4 right-4 bg-indigo-500/10 border border-indigo-400/20 px-3 py-1 rounded-full text-[10px] text-indigo-500">
+              EDUCATION
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-display text-xl mb-2">Edu360</h3>
+            <p class="text-gray-400 text-sm leading-relaxed mb-5">
+              Student management platform with dashboard & course system.
+            </p>
+            <a href="https://edu360-eight.vercel.app/" target="_blank" class="inline-flex items-center gap-2 text-indigo-500 hover:text-indigo-400 text-sm font-semibold">
+              Live Demo
+              <iconify-icon icon="lucide:arrow-up-right" width="16"></iconify-icon>
+            </a>
+          </div>
+        </div>
+
+        <div class="reveal reveal-delay-2 project-card card-3d glass-glow rounded-3xl overflow-hidden group">
+          <div class="h-44 bg-gradient-to-br from-purple-500/20 via-pink-500/10 to-transparent flex items-center justify-center relative">
+            <iconify-icon icon="lucide:brain-circuit" width="60" class="text-purple-400/70 group-hover:scale-110 transition-all duration-500"></iconify-icon>
+            <div class="absolute top-4 right-4 bg-purple-500/10 border border-purple-400/20 px-3 py-1 rounded-full text-[10px] text-purple-500">
+              AI SYSTEM
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-display text-xl mb-2">NeuralFlow</h3>
+            <p class="text-gray-400 text-sm leading-relaxed mb-5">
+              AI business website with lead management & booking calendar.
+            </p>
+            <a href="https://neuralflow-gold.vercel.app" target="_blank" class="inline-flex items-center gap-2 text-purple-500 hover:text-purple-400 text-sm font-semibold">
+              Live Demo
+              <iconify-icon icon="lucide:arrow-up-right" width="16"></iconify-icon>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider max-w-5xl mx-auto"></div>
+
+  <!-- ==================== CERTIFICATIONS ==================== -->
+  <section id="certifications" class="py-24 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <p class="text-[10px] font-semibold tracking-[0.3em] uppercase text-blue-400 mb-3">Credentials</p>
+        <h2 class="font-display text-3xl md:text-4xl font-600 tracking-tight"><span class="gradient-text">Certifications</span></h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="reveal cert-badge rounded-xl p-6 flex items-start gap-4 transition-all duration-300 hover:border-blue-500/40">
+          <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center shrink-0">
+            <iconify-icon icon="lucide:cloud-cog" width="20" class="text-blue-400"></iconify-icon>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-white mb-1">Oracle Cloud Infrastructure DevOps Professional</h4>
+            <p class="text-xs text-gray-500">Oracle · 2025</p>
+          </div>
+        </div>
+
+        <div class="reveal reveal-delay-1 cert-badge rounded-xl p-6 flex items-start gap-4 transition-all duration-300 hover:border-blue-500/40">
+          <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center shrink-0">
+            <iconify-icon icon="lucide:bar-chart-big" width="20" class="text-purple-400"></iconify-icon>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-white mb-1">GenAI Powered Data Analytics Job Simulation</h4>
+            <p class="text-xs text-gray-500">Tata (Forage Program) · 2025</p>
+          </div>
+        </div>
+
+        <div class="reveal cert-badge rounded-xl p-6 flex items-start gap-4 transition-all duration-300 hover:border-blue-500/40">
+          <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center shrink-0">
+            <iconify-icon icon="lucide:shield-check" width="20" class="text-green-400"></iconify-icon>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-white mb-1">Information Security Training</h4>
+            <p class="text-xs text-gray-500">ALLEN Career Institute · 2025</p>
+          </div>
+        </div>
+
+        <div class="reveal reveal-delay-1 cert-badge rounded-xl p-6 flex items-start gap-4 transition-all duration-300 hover:border-blue-500/40">
+          <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center shrink-0">
+            <iconify-icon icon="lucide:sparkles" width="20" class="text-orange-400"></iconify-icon>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-white mb-1">AI & Prompt Engineering — Claude AI Fundamentals</h4>
+            <p class="text-xs text-gray-500">Claude AI · 2025</p>
+          </div>
+        </div>
+
+        <div class="reveal cert-badge rounded-xl p-6 flex items-start gap-4 transition-all duration-300 hover:border-blue-500/40 md:col-span-2">
+          <div class="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center shrink-0">
+            <iconify-icon icon="lucide:cpu" width="20" class="text-cyan-400"></iconify-icon>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-white mb-1">AI Tools & Automation Certification — Practical AI Workflow & Automation Systems</h4>
+            <p class="text-xs text-gray-500">2025</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider max-w-5xl mx-auto"></div>
+
+  <!-- ==================== LANGUAGES ==================== -->
+  <section class="py-24 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <p class="text-[10px] font-semibold tracking-[0.3em] uppercase text-blue-400 mb-3">Communication</p>
+        <h2 class="font-display text-3xl md:text-4xl font-600 tracking-tight"><span class="gradient-text">Languages</span></h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+        <div class="reveal glass rounded-2xl p-6 text-center glass-hover transition-all duration-300">
+          <div class="text-3xl mb-3">🇮🇳</div>
+          <h4 class="font-display text-lg font-600">Hindi</h4>
+          <p class="text-xs text-gray-500 mt-1">Native / Bilingual</p>
+          <div class="mt-4 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full language-bar" data-width="100" style="width: 0%; transition: width 1.5s ease;"></div>
+          </div>
+        </div>
+        <div class="reveal reveal-delay-1 glass rounded-2xl p-6 text-center glass-hover transition-all duration-300">
+          <div class="text-3xl mb-3">🇬🇧</div>
+          <h4 class="font-display text-lg font-600">English</h4>
+          <p class="text-xs text-gray-500 mt-1">Full Professional</p>
+          <div class="mt-4 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full language-bar" data-width="90" style="width: 0%; transition: width 1.5s ease;"></div>
+          </div>
+        </div>
+        <div class="reveal reveal-delay-2 glass rounded-2xl p-6 text-center glass-hover transition-all duration-300">
+          <div class="text-3xl mb-3">🇩🇪</div>
+          <h4 class="font-display text-lg font-600">German</h4>
+          <p class="text-xs text-gray-500 mt-1">Limited Working</p>
+          <div class="mt-4 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full language-bar" data-width="30" style="width: 0%; transition: width 1.5s ease;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider max-w-5xl mx-auto"></div>
+
+  <!-- ==================== CONTACT ==================== -->
+  <section id="contact" class="py-24 px-6">
+    <div class="max-w-3xl mx-auto text-center">
+      <div class="reveal">
+        <p class="text-[10px] font-semibold tracking-[0.3em] uppercase text-blue-400 mb-3">Let's Connect</p>
+        <h2 class="font-display text-3xl md:text-5xl font-600 tracking-tight mb-4">Ready to Build<br><span class="gradient-text">Something Great?</span></h2>
+        <p class="text-gray-400 text-sm leading-relaxed mb-12 max-w-lg mx-auto">
+          Whether you need AI automation, CRM systems, or product strategy — let's discuss how I can help drive your business forward.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-4 mb-10">
+        <a href="mailto:pkoffice1994@gmail.com" class="reveal glass rounded-xl p-5 flex items-center gap-4 glass-hover transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+            <iconify-icon icon="lucide:mail" width="20" class="text-blue-400"></iconify-icon>
+          </div>
+          <div class="text-left">
+            <p class="text-[10px] tracking-[0.2em] uppercase text-gray-500">Email</p>
+            <p class="text-sm text-white font-medium">pkoffice1994@gmail.com</p>
+          </div>
+        </a>
+        <a href="tel:8504980839" class="reveal reveal-delay-1 glass rounded-xl p-5 flex items-center gap-4 glass-hover transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center group-hover:bg-green-500/20 transition-colors">
+            <iconify-icon icon="lucide:phone" width="20" class="text-green-400"></iconify-icon>
+          </div>
+          <div class="text-left">
+            <p class="text-[10px] tracking-[0.2em] uppercase text-gray-500">Phone</p>
+            <p class="text-sm text-white font-medium">+91 8504980839</p>
+          </div>
+        </a>
+        <a href="https://linkedin.com/in/pawan-kumar-jain-ab19a0217" target="_blank" class="reveal glass rounded-xl p-5 flex items-center gap-4 glass-hover transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+            <iconify-icon icon="lucide:linkedin" width="20" class="text-purple-400"></iconify-icon>
+          </div>
+          <div class="text-left">
+            <p class="text-[10px] tracking-[0.2em] uppercase text-gray-500">LinkedIn</p>
+            <p class="text-sm text-white font-medium">pawan-kumar-jain</p>
+          </div>
+        </a>
+        <a href="https://neuralflow-gold.vercel.app" target="_blank" class="reveal reveal-delay-1 glass rounded-xl p-5 flex items-center gap-4 glass-hover transition-all duration-300 group">
+          <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
+            <iconify-icon icon="lucide:globe" width="20" class="text-cyan-400"></iconify-icon>
+          </div>
+          <div class="text-left">
+            <p class="text-[10px] tracking-[0.2em] uppercase text-gray-500">Portfolio</p>
+            <p class="text-sm text-white font-medium">NeuralFlow</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Quick message form -->
+      <div class="reveal glass rounded-2xl p-8 text-left">
+        <h3 class="font-display text-lg font-600 tracking-tight mb-6 text-center">Send a Quick Message</h3>
+        <form id="contactForm" class="space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <input type="text" placeholder="Your Name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors">
+            <input type="email" placeholder="Your Email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors">
+          </div>
+          <input type="text" placeholder="Subject" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors">
+          <textarea rows="4" placeholder="Your Message" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors resize-none"></textarea>
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold tracking-tight py-3.5 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 flex items-center justify-center gap-2">
+            <iconify-icon icon="lucide:send" width="16"></iconify-icon>
+            Send Message
+          </button>
+        </form>
+        <div id="formSuccess" class="hidden text-center py-8">
+          <iconify-icon icon="lucide:check-circle-2" width="48" class="text-green-400 mb-3"></iconify-icon>
+          <p class="text-green-400 font-medium">Message sent successfully!</p>
+          <p class="text-gray-500 text-xs mt-1">I'll get back to you soon.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-white/5 py-10 px-6">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <span class="font-display text-sm font-600 gradient-text">PKJ</span>
+        <span class="text-gray-600 text-xs">·</span>
+        <span class="text-gray-600 text-xs">Business Analyst & APM</span>
+      </div>
+      <p class="text-gray-600 text-xs">© 2025 Pawan Kumar Jain. Built with AI & passion.</p>
+      <div class="flex items-center gap-4">
+        <a href="mailto:pkoffice1994@gmail.com" class="text-gray-600 hover:text-blue-400 transition-colors"><iconify-icon icon="lucide:mail" width="16"></iconify-icon></a>
+        <a href="https://linkedin.com/in/pawan-kumar-jain-ab19a0217" target="_blank" class="text-gray-600 hover:text-blue-400 transition-colors"><iconify-icon icon="lucide:linkedin" width="16"></iconify-icon></a>
+        <a href="https://neuralflow-gold.vercel.app" target="_blank" class="text-gray-600 hover:text-blue-400 transition-colors"><iconify-icon icon="lucide:globe" width="16"></iconify-icon></a>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- /content-layer -->
+
+<!-- ==================== THREE.JS 3D SCENE ==================== -->
+<script type="module">
+import * as THREE from 'three';
+
+const canvas = document.getElementById('three-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 30;
+
+// Particles
+const particleCount = 1500;
+const particleGeometry = new THREE.BufferGeometry();
+const positions = new Float32Array(particleCount * 3);
+const colors = new Float32Array(particleCount * 3);
+const sizes = new Float32Array(particleCount);
+
+const colorPalette = [
+  new THREE.Color('#3B82F6'),
+  new THREE.Color('#6366F1'),
+  new THREE.Color('#8B5CF6'),
+  new THREE.Color('#06B6D4'),
+  new THREE.Color('#22D3EE'),
+];
+
+for (let i = 0; i < particleCount; i++) {
+  positions[i * 3] = (Math.random() - 0.5) * 80;
+  positions[i * 3 + 1] = (Math.random() - 0.5) * 80;
+  positions[i * 3 + 2] = (Math.random() - 0.5) * 60;
+
+  const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+  colors[i * 3] = color.r;
+  colors[i * 3 + 1] = color.g;
+  colors[i * 3 + 2] = color.b;
+
+  sizes[i] = Math.random() * 2 + 0.5;
+}
+
+particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+particleGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+const particleMaterial = new THREE.PointsMaterial({
+  size: 0.15,
+  vertexColors: true,
+  transparent: true,
+  opacity: 0.6,
+  blending: THREE.AdditiveBlending,
+  sizeAttenuation: true,
+});
+
+const particles = new THREE.Points(particleGeometry, particleMaterial);
+scene.add(particles);
+
+// Floating Geometries
+const geometries = [];
+const geoMaterials = [
+  new THREE.MeshBasicMaterial({ color: 0x3B82F6, wireframe: true, transparent: true, opacity: 0.15 }),
+  new THREE.MeshBasicMaterial({ color: 0x6366F1, wireframe: true, transparent: true, opacity: 0.12 }),
+  new THREE.MeshBasicMaterial({ color: 0x8B5CF6, wireframe: true, transparent: true, opacity: 0.1 }),
+  new THREE.MeshBasicMaterial({ color: 0x06B6D4, wireframe: true, transparent: true, opacity: 0.12 }),
+];
+
+const shapes = [
+  new THREE.IcosahedronGeometry(3, 1),
+  new THREE.OctahedronGeometry(2.5, 0),
+  new THREE.TorusGeometry(2.5, 0.6, 8, 16),
+  new THREE.TetrahedronGeometry(2.5, 0),
+  new THREE.DodecahedronGeometry(2, 0),
+  new THREE.TorusKnotGeometry(1.8, 0.5, 50, 8),
+  new THREE.IcosahedronGeometry(2, 0),
+  new THREE.OctahedronGeometry(3, 1),
+];
+
+for (let i = 0; i < 8; i++) {
+  const mesh = new THREE.Mesh(shapes[i], geoMaterials[i % geoMaterials.length]);
+  mesh.position.set(
+    (Math.random() - 0.5) * 50,
+    (Math.random() - 0.5) * 50,
+    (Math.random() - 0.5) * 30 - 10
+  );
+  mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+  mesh.userData = {
+    rotSpeed: { x: (Math.random() - 0.5) * 0.005, y: (Math.random() - 0.5) * 0.005 },
+    floatSpeed: Math.random() * 0.3 + 0.2,
+    floatOffset: Math.random() * Math.PI * 2,
+    origY: mesh.position.y,
+  };
+  scene.add(mesh);
+  geometries.push(mesh);
+}
+
+// Connection lines
+const lineGeometry = new THREE.BufferGeometry();
+const linePositions = new Float32Array(200 * 6);
+lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+const lineMaterial = new THREE.LineBasicMaterial({
+  color: 0x3B82F6,
+  transparent: true,
+  opacity: 0.04,
+  blending: THREE.AdditiveBlending,
+});
+const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+scene.add(lines);
+
+// Mouse
+let mouseX = 0, mouseY = 0;
+document.addEventListener('mousemove', (e) => {
+  mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+  mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+});
+
+// Scroll
+let scrollY = 0;
+window.addEventListener('scroll', () => {
+  scrollY = window.scrollY;
+});
+
+// Animation
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const t = clock.getElapsedTime();
+
+  // Rotate particles slowly
+  particles.rotation.y = t * 0.02 + mouseX * 0.1;
+  particles.rotation.x = mouseY * 0.05;
+
+  // Animate geometries
+  geometries.forEach((geo) => {
+    geo.rotation.x += geo.userData.rotSpeed.x;
+    geo.rotation.y += geo.userData.rotSpeed.y;
+    geo.position.y = geo.userData.origY + Math.sin(t * geo.userData.floatSpeed + geo.userData.floatOffset) * 1.5;
+  });
+
+  // Update connection lines
+  let lineIdx = 0;
+  const posArray = particles.geometry.attributes.position.array;
+  for (let i = 0; i < Math.min(particleCount, 300); i += 3) {
+    for (let j = i + 3; j < Math.min(particleCount, 300); j += 5) {
+      if (lineIdx >= 200) break;
+      const dx = posArray[i*3] - posArray[j*3];
+      const dy = posArray[i*3+1] - posArray[j*3+1];
+      const dz = posArray[i*3+2] - posArray[j*3+2];
+      const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+      if (dist < 8) {
+        linePositions[lineIdx*6] = posArray[i*3];
+        linePositions[lineIdx*6+1] = posArray[i*3+1];
+        linePositions[lineIdx*6+2] = posArray[i*3+2];
+        linePositions[lineIdx*6+3] = posArray[j*3];
+        linePositions[lineIdx*6+4] = posArray[j*3+1];
+        linePositions[lineIdx*6+5] = posArray[j*3+2];
+        lineIdx++;
+      }
+    }
+    if (lineIdx >= 200) break;
+  }
+  for (let i = lineIdx; i < 200; i++) {
+    linePositions[i*6] = 0; linePositions[i*6+1] = 0; linePositions[i*6+2] = 0;
+    linePositions[i*6+3] = 0; linePositions[i*6+4] = 0; linePositions[i*6+5] = 0;
+  }
+  lines.geometry.attributes.position.needsUpdate = true;
+
+  // Camera parallax
+  camera.position.x += (mouseX * 3 - camera.position.x) * 0.02;
+  camera.position.y += (-mouseY * 2 - scrollY * 0.003 - camera.position.y) * 0.02;
+  camera.lookAt(0, -scrollY * 0.003, 0);
+
+  renderer.render(scene, camera);
+}
+animate();
+
+// Resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+
+<!-- ==================== UI SCRIPTS ==================== -->
+<script>
+// Scroll reveal
+const revealElements = document.querySelectorAll('.reveal');
+const tiltSurfaces = document.querySelectorAll('.glass-hover, .project-card, .cert-badge, .hero-chip, .float-anim, .float-anim-delay, .float-anim-delay-2');
+const magneticButtons = document.querySelectorAll('.magnetic-btn');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('active');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+revealElements.forEach(el => revealObserver.observe(el));
+
+tiltSurfaces.forEach((card) => {
+  card.classList.add('tilt-surface');
+  card.addEventListener('mousemove', (event) => {
+    const rect = card.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    const rotateY = (x - 0.5) * 12;
+    const rotateX = (0.5 - y) * 10;
+    card.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+
+magneticButtons.forEach((button) => {
+  button.addEventListener('mousemove', (event) => {
+    const rect = button.getBoundingClientRect();
+    const x = event.clientX - rect.left - rect.width / 2;
+    const y = event.clientY - rect.top - rect.height / 2;
+    button.style.transform = `translate(${x * 0.08}px, ${y * 0.08}px) scale(1.04)`;
+  });
+  button.addEventListener('mouseleave', () => {
+    button.style.transform = '';
+  });
+});
+
+// Language bars
+const langBars = document.querySelectorAll('.language-bar');
+const langObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const width = entry.target.dataset.width;
+      entry.target.style.width = width + '%';
+    }
+  });
+}, { threshold: 0.5 });
+langBars.forEach(bar => langObserver.observe(bar));
+
+// Stat counter animation
+const statNumbers = document.querySelectorAll('.stat-number');
+const statObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !entry.target.dataset.animated) {
+      entry.target.dataset.animated = 'true';
+      const target = parseInt(entry.target.dataset.target);
+      let current = 0;
+      const increment = target / 60;
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        entry.target.textContent = Math.floor(current) + '+';
+      }, 25);
+    }
+  });
+}, { threshold: 0.5 });
+statNumbers.forEach(num => statObserver.observe(num));
+
+// Active nav link
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link[data-section]');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const top = section.offsetTop - 100;
+    if (window.scrollY >= top) {
+      current = section.getAttribute('id');
+    }
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.dataset.section === current) {
+      link.classList.add('active');
+    }
+  });
+});
+
+// Mobile menu
+const menuBtn = document.getElementById('menuBtn');
+const closeMenuBtn = document.getElementById('closeMenu');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileLinks = document.querySelectorAll('.mobile-link');
+
+menuBtn.addEventListener('click', () => mobileMenu.classList.add('open'));
+closeMenuBtn.addEventListener('click', () => mobileMenu.classList.remove('open'));
+mobileLinks.forEach(link => {
+  link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+});
+
+// Contact form
+const contactForm = document.getElementById('contactForm');
+const formSuccess = document.getElementById('formSuccess');
+contactForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  contactForm.style.display = 'none';
+  formSuccess.classList.remove('hidden');
+  setTimeout(() => {
+    contactForm.style.display = '';
+    formSuccess.classList.add('hidden');
+    contactForm.reset();
+  }, 4000);
+});
+</script>
+
+</body>
+</html>

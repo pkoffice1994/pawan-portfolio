@@ -304,127 +304,131 @@
     font-weight: 600;
     backdrop-filter: blur(12px);
   }
-  .hero-command-panel {
+  .hero-bento {
     position: relative;
-    margin: 0 auto 22px;
-    max-width: 1020px;
-    perspective: 1500px;
+    margin: 0 auto 18px;
+    max-width: 980px;
   }
-  .hero-command-grid {
+  .hero-bento-grid {
     display: grid;
-    grid-template-columns: 1fr 1.2fr 1fr;
-    gap: 14px;
-    padding: 18px;
-    border-radius: 30px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(240,249,255,0.9));
-    border: 1px solid rgba(148,163,184,0.2);
-    box-shadow: 0 28px 70px rgba(59,130,246,0.12);
-    backdrop-filter: blur(18px);
-    transform: rotateX(8deg);
-    transform-style: preserve-3d;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 18px;
+    align-items: stretch;
   }
-  .console-card {
+  .hero-copy-card,
+  .hero-visual-card {
     position: relative;
+    border-radius: 32px;
     overflow: hidden;
-    border-radius: 24px;
-    padding: 18px 18px 16px;
-    background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.74);
+    backdrop-filter: blur(18px);
     border: 1px solid rgba(148,163,184,0.18);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.65);
-    transform: translateZ(10px);
+    box-shadow: 0 24px 62px rgba(15,23,42,0.08);
   }
-  .console-card::after {
-    content: '';
-    position: absolute;
-    inset: auto -18% -55% -18%;
-    height: 120px;
-    background: radial-gradient(circle, rgba(59,130,246,0.18), transparent 70%);
-    pointer-events: none;
+  .hero-copy-card {
+    padding: 28px;
+    text-align: left;
   }
-  .console-card small {
+  .hero-visual-card {
+    padding: 20px;
+    min-height: 100%;
+  }
+  .hero-kicker {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.25em;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 9999px;
+    background: rgba(37,99,235,0.08);
+    color: #2563eb;
+    border: 1px solid rgba(37,99,235,0.12);
     font-size: 10px;
-    color: #64748b;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 18px;
   }
-  .console-value {
+  .hero-side-grid {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+  }
+  .hero-side-tile {
+    border-radius: 24px;
+    padding: 18px;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,0.86), rgba(240,249,255,0.92));
+    border: 1px solid rgba(148,163,184,0.16);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.68);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 148px;
+  }
+  .hero-side-tile.feature {
+    grid-column: span 2;
+    min-height: 216px;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle at center, rgba(59,130,246,0.14), transparent 52%),
+      linear-gradient(135deg, rgba(255,255,255,0.88), rgba(239,246,255,0.78));
+  }
+  .hero-mini-label {
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #64748b;
+    font-weight: 700;
+  }
+  .hero-mini-value {
     font-family: 'Oswald', sans-serif;
-    font-size: 30px;
+    font-size: 24px;
     line-height: 1;
     color: #0f172a;
     margin-top: 10px;
   }
-  .console-note {
+  .hero-mini-note {
     font-size: 13px;
-    color: #475569;
     line-height: 1.45;
+    color: #475569;
     margin-top: 10px;
   }
-  .console-core {
-    position: relative;
-    min-height: 100%;
-    border-radius: 26px;
-    background:
-      radial-gradient(circle at center, rgba(59,130,246,0.18), transparent 42%),
-      linear-gradient(135deg, rgba(255,255,255,0.92), rgba(239,246,255,0.72));
-    border: 1px solid rgba(96,165,250,0.26);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 18px 35px rgba(59,130,246,0.09);
-    display: grid;
-    place-items: center;
-    padding: 18px;
-    transform: translateZ(26px);
-  }
-  .console-core-badge {
-    position: absolute;
-    top: 14px;
-    left: 16px;
-    padding: 6px 10px;
-    border-radius: 9999px;
-    background: rgba(37,99,235,0.08);
-    border: 1px solid rgba(37,99,235,0.14);
-    color: #2563eb;
-    font-size: 10px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    font-weight: 700;
-  }
-  .console-orb {
-    width: 118px;
-    height: 118px;
+  .hero-rings {
+    width: 128px;
+    height: 128px;
     border-radius: 50%;
+    position: relative;
     background:
-      radial-gradient(circle at 30% 30%, rgba(255,255,255,0.96) 0%, rgba(191,219,254,0.8) 18%, rgba(96,165,250,0.45) 46%, rgba(124,58,237,0.28) 64%, rgba(15,23,42,0.02) 100%);
+      radial-gradient(circle at center, rgba(255,255,255,0.98) 0%, rgba(191,219,254,0.82) 18%, rgba(96,165,250,0.48) 46%, rgba(124,58,237,0.24) 66%, rgba(15,23,42,0.02) 100%);
     box-shadow:
       0 0 0 10px rgba(59,130,246,0.06),
       0 0 0 22px rgba(124,58,237,0.05),
-      0 20px 40px rgba(59,130,246,0.18);
+      0 18px 38px rgba(59,130,246,0.16);
     animation: orbPulse 6s ease-in-out infinite;
-    position: relative;
   }
-  .console-orb::before,
-  .console-orb::after {
+  .hero-rings::before,
+  .hero-rings::after {
     content: '';
     position: absolute;
-    inset: 18px;
+    inset: 20px;
     border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.7);
   }
-  .console-orb::after {
-    inset: 34px;
-    border-color: rgba(255,255,255,0.8);
+  .hero-rings::after {
+    inset: 38px;
+    border-color: rgba(255,255,255,0.85);
   }
-  .console-orb-center {
+  .hero-rings-core {
     position: absolute;
     inset: 50% auto auto 50%;
     width: 30px;
     height: 30px;
-    border-radius: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(255,255,255,0.85);
-    box-shadow: 0 0 18px rgba(255,255,255,0.8);
+    border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 0 18px rgba(255,255,255,0.85);
   }
   .tilt-surface {
     transform-style: preserve-3d;
@@ -464,12 +468,15 @@
     50% { transform: scale(1.05) rotate(12deg); }
   }
   @media (max-width: 768px) {
-    .hero-command-grid {
+    .hero-bento-grid {
       grid-template-columns: 1fr;
-      transform: none;
     }
-    .console-core {
-      min-height: 220px;
+    .hero-side-grid {
+      grid-template-columns: 1fr;
+    }
+    .hero-side-tile.feature {
+      grid-column: auto;
+      min-height: 190px;
     }
   }
   @keyframes floatNode {
@@ -561,27 +568,50 @@
         </div>
       </div>
 
-      <!-- 3D Command Center -->
-      <div class="hero-command-panel hero-anim-2">
-        <div class="hero-command-grid">
-          <div class="console-card text-left">
-            <small><iconify-icon icon="lucide:activity" width="12"></iconify-icon>Live Systems</small>
-            <div class="console-value">AI + Growth</div>
-            <p class="console-note">Automation, CRM, and business workflows working as one system.</p>
-          </div>
-          <div class="console-core">
-            <div class="console-core-badge">Command Center</div>
-            <div class="text-center">
-              <div class="console-orb mx-auto">
-                <div class="console-orb-center"></div>
-              </div>
-              <p class="mt-5 text-[10px] tracking-[0.28em] uppercase text-blue-500 font-semibold">Building the future of AI</p>
+      <!-- Trendy Bento Hero -->
+      <div class="hero-bento hero-anim-2">
+        <div class="hero-bento-grid">
+          <div class="hero-copy-card">
+            <div class="hero-kicker">
+              <iconify-icon icon="lucide:sparkles" width="12"></iconify-icon>
+              Latest Portfolio Build
             </div>
+            <p class="text-[10px] font-semibold tracking-[0.35em] uppercase text-blue-400 mb-4">AI Growth Command Center</p>
+            <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-700 tracking-tight leading-[0.96] mb-5">
+              Clean. Modern.<br>
+              <span class="gradient-text">Founder-first</span> design.
+            </h2>
+            <p class="text-gray-400 text-sm md:text-base leading-relaxed max-w-xl">
+              A premium portfolio layout built for 2026 - minimal glass surfaces, sharper typography, and a calmer premium feel instead of the bulky control-board look.
+            </p>
           </div>
-          <div class="console-card text-left">
-            <small><iconify-icon icon="lucide:layers-3" width="12"></iconify-icon>Brand Layer</small>
-            <div class="console-value">Founder Mode</div>
-            <p class="console-note">Projects, social presence, and execution channels presented like a premium control board.</p>
+
+          <div class="hero-visual-card">
+            <div class="hero-side-grid">
+              <div class="hero-side-tile feature">
+                <div class="text-center">
+                  <div class="hero-rings mx-auto">
+                    <div class="hero-rings-core"></div>
+                  </div>
+                  <p class="mt-5 text-[10px] tracking-[0.3em] uppercase text-blue-500 font-semibold">AI systems + growth + brand</p>
+                </div>
+              </div>
+              <div class="hero-side-tile">
+                <span class="hero-mini-label">Live Mode</span>
+                <div class="hero-mini-value">AI Growth</div>
+                <p class="hero-mini-note">Automation and CRM operating as a single flow.</p>
+              </div>
+              <div class="hero-side-tile">
+                <span class="hero-mini-label">Brand Layer</span>
+                <div class="hero-mini-value">Social + Founder</div>
+                <p class="hero-mini-note">Projects and presence presented with a premium edge.</p>
+              </div>
+              <div class="hero-side-tile">
+                <span class="hero-mini-label">Stack</span>
+                <div class="hero-mini-value">AI / Web / Growth</div>
+                <p class="hero-mini-note">A clean visual language that feels current and polished.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

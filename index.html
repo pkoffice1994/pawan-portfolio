@@ -304,36 +304,35 @@
     font-weight: 600;
     backdrop-filter: blur(12px);
   }
-  .hero-bento {
+  .hero-fresh {
     position: relative;
     margin: 0 auto 18px;
-    max-width: 980px;
+    max-width: 1080px;
   }
-  .hero-bento-grid {
+  .hero-fresh-grid {
     display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
+    grid-template-columns: 1.1fr 0.9fr;
     gap: 18px;
     align-items: stretch;
   }
-  .hero-copy-card,
-  .hero-visual-card {
+  .hero-fresh-copy,
+  .hero-fresh-visual {
     position: relative;
-    border-radius: 32px;
+    border-radius: 34px;
     overflow: hidden;
-    background: rgba(255,255,255,0.74);
+    background: rgba(255,255,255,0.7);
     backdrop-filter: blur(18px);
     border: 1px solid rgba(148,163,184,0.18);
     box-shadow: 0 24px 62px rgba(15,23,42,0.08);
   }
-  .hero-copy-card {
-    padding: 28px;
+  .hero-fresh-copy {
+    padding: 30px;
     text-align: left;
   }
-  .hero-visual-card {
+  .hero-fresh-visual {
     padding: 20px;
-    min-height: 100%;
   }
-  .hero-kicker {
+  .hero-fresh-kicker {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -348,56 +347,54 @@
     font-weight: 700;
     margin-bottom: 18px;
   }
-  .hero-side-grid {
+  .hero-fresh-track {
     display: grid;
     gap: 14px;
     grid-template-columns: 1fr 1fr;
-    height: 100%;
   }
-  .hero-side-tile {
+  .hero-fresh-card {
     border-radius: 24px;
     padding: 18px;
-    background:
-      linear-gradient(135deg, rgba(255,255,255,0.86), rgba(240,249,255,0.92));
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,249,255,0.92));
     border: 1px solid rgba(148,163,184,0.16);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.68);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 148px;
+    min-height: 154px;
   }
-  .hero-side-tile.feature {
+  .hero-fresh-card.feature {
     grid-column: span 2;
-    min-height: 216px;
+    min-height: 230px;
     display: grid;
     place-items: center;
     background:
-      radial-gradient(circle at center, rgba(59,130,246,0.14), transparent 52%),
-      linear-gradient(135deg, rgba(255,255,255,0.88), rgba(239,246,255,0.78));
+      radial-gradient(circle at center, rgba(59,130,246,0.12), transparent 52%),
+      linear-gradient(135deg, rgba(255,255,255,0.9), rgba(239,246,255,0.78));
   }
-  .hero-mini-label {
+  .hero-fresh-mini {
     font-size: 10px;
     letter-spacing: 0.24em;
     text-transform: uppercase;
     color: #64748b;
     font-weight: 700;
   }
-  .hero-mini-value {
+  .hero-fresh-title {
     font-family: 'Oswald', sans-serif;
     font-size: 24px;
     line-height: 1;
     color: #0f172a;
     margin-top: 10px;
   }
-  .hero-mini-note {
-    font-size: 13px;
-    line-height: 1.45;
+  .hero-fresh-copy p.lead {
+    font-size: 16px;
+    line-height: 1.65;
     color: #475569;
-    margin-top: 10px;
+    max-width: 540px;
   }
-  .hero-rings {
-    width: 128px;
-    height: 128px;
+  .hero-spark {
+    width: 122px;
+    height: 122px;
     border-radius: 50%;
     position: relative;
     background:
@@ -408,19 +405,19 @@
       0 18px 38px rgba(59,130,246,0.16);
     animation: orbPulse 6s ease-in-out infinite;
   }
-  .hero-rings::before,
-  .hero-rings::after {
+  .hero-spark::before,
+  .hero-spark::after {
     content: '';
     position: absolute;
     inset: 20px;
     border-radius: 50%;
     border: 1px solid rgba(255,255,255,0.7);
   }
-  .hero-rings::after {
+  .hero-spark::after {
     inset: 38px;
     border-color: rgba(255,255,255,0.85);
   }
-  .hero-rings-core {
+  .hero-spark-core {
     position: absolute;
     inset: 50% auto auto 50%;
     width: 30px;
@@ -468,13 +465,13 @@
     50% { transform: scale(1.05) rotate(12deg); }
   }
   @media (max-width: 768px) {
-    .hero-bento-grid {
+    .hero-fresh-grid {
       grid-template-columns: 1fr;
     }
-    .hero-side-grid {
+    .hero-fresh-track {
       grid-template-columns: 1fr;
     }
-    .hero-side-tile.feature {
+    .hero-fresh-card.feature {
       grid-column: auto;
       min-height: 190px;
     }
@@ -568,47 +565,66 @@
         </div>
       </div>
 
-      <!-- Trendy Bento Hero -->
-      <div class="hero-bento hero-anim-2">
-        <div class="hero-bento-grid">
-          <div class="hero-copy-card">
-            <div class="hero-kicker">
+      <!-- Fresh Editorial Hero -->
+      <div class="hero-fresh hero-anim-2">
+        <div class="hero-fresh-grid">
+          <div class="hero-fresh-copy">
+            <div class="hero-fresh-kicker">
               <iconify-icon icon="lucide:sparkles" width="12"></iconify-icon>
-              Latest Portfolio Build
+              Portfolio Refresh
             </div>
-            <p class="text-[10px] font-semibold tracking-[0.35em] uppercase text-blue-400 mb-4">AI Growth Command Center</p>
+            <p class="text-[10px] font-semibold tracking-[0.35em] uppercase text-blue-400 mb-4">Head of Growth - AI & Automation</p>
+            <h1 class="font-display text-5xl md:text-6xl lg:text-7xl font-700 tracking-tighter leading-[0.9] mb-5">
+              <span class="text-white">PAWAN</span><br>
+              <span class="gradient-text">KUMAR JAIN</span>
+            </h1>
             <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-700 tracking-tight leading-[0.96] mb-5">
               Clean. Modern.<br>
-              <span class="gradient-text">AI-led</span> design.
+              <span class="gradient-text">AI-led</span> portfolio.
             </h2>
-            <p class="text-gray-400 text-sm md:text-base leading-relaxed max-w-xl">
-              A premium portfolio layout built for 2026 - minimal glass surfaces, sharper typography, and a calmer premium feel instead of the bulky control-board look.
+            <p class="lead mb-8">
+              A lighter, more editorial portfolio built with glass depth, refined typography, and a modern founder-style visual language.
             </p>
+            <div class="hero-chip-stack hero-anim-3 !justify-start !mx-0">
+              <span class="hero-chip tilt-surface"><iconify-icon icon="lucide:bot" width="14" class="text-blue-500"></iconify-icon>AI-driven platforms</span>
+              <span class="hero-chip tilt-surface"><iconify-icon icon="lucide:workflow" width="14" class="text-violet-500"></iconify-icon>Workflow automation</span>
+              <span class="hero-chip tilt-surface"><iconify-icon icon="lucide:users-round" width="14" class="text-cyan-500"></iconify-icon>CRM systems</span>
+            </div>
+            <div class="hero-anim-4 flex flex-wrap items-center gap-4 mt-8">
+              <a href="#contact" class="magnetic-btn bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold tracking-tight px-8 py-3.5 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25 flex items-center gap-2">
+                <iconify-icon icon="lucide:mail" width="16"></iconify-icon>
+                Get In Touch
+              </a>
+              <a href="#projects" class="magnetic-btn border border-white/10 hover:border-white/30 text-white text-sm font-semibold tracking-tight px-8 py-3.5 rounded-lg transition-all duration-300 hover:scale-105 flex items-center gap-2">
+                <iconify-icon icon="lucide:folder-open" width="16"></iconify-icon>
+                View Projects
+              </a>
+            </div>
           </div>
 
-          <div class="hero-visual-card">
-            <div class="hero-side-grid">
-              <div class="hero-side-tile feature">
+          <div class="hero-fresh-visual">
+            <div class="hero-fresh-track">
+              <div class="hero-fresh-card feature">
                 <div class="text-center">
-                  <div class="hero-rings mx-auto">
-                    <div class="hero-rings-core"></div>
+                  <div class="hero-spark mx-auto">
+                    <div class="hero-spark-core"></div>
                   </div>
                   <p class="mt-5 text-[10px] tracking-[0.3em] uppercase text-blue-500 font-semibold">AI systems + growth + brand</p>
                 </div>
               </div>
-              <div class="hero-side-tile">
-                <span class="hero-mini-label">Live Mode</span>
-                <div class="hero-mini-value">AI Growth</div>
+              <div class="hero-fresh-card">
+                <span class="hero-fresh-mini">Live Mode</span>
+                <div class="hero-fresh-title">AI Growth</div>
                 <p class="hero-mini-note">Automation and CRM operating as a single flow.</p>
               </div>
-              <div class="hero-side-tile">
-                <span class="hero-mini-label">Brand Layer</span>
-                <div class="hero-mini-value">Social + Brand</div>
+              <div class="hero-fresh-card">
+                <span class="hero-fresh-mini">Brand Layer</span>
+                <div class="hero-fresh-title">Social + Brand</div>
                 <p class="hero-mini-note">Projects and presence presented with a premium edge.</p>
               </div>
-              <div class="hero-side-tile">
-                <span class="hero-mini-label">Stack</span>
-                <div class="hero-mini-value">AI / Web / Growth</div>
+              <div class="hero-fresh-card">
+                <span class="hero-fresh-mini">Stack</span>
+                <div class="hero-fresh-title">AI / Web / Growth</div>
                 <p class="hero-mini-note">A clean visual language that feels current and polished.</p>
               </div>
             </div>
@@ -616,50 +632,7 @@
         </div>
       </div>
 
-      <p class="hero-anim-1 text-[10px] font-semibold tracking-[0.3em] uppercase text-blue-400 mb-6">Head of Growth - AI & Automation</p>
-
-      <h1 class="hero-anim-2 font-display text-5xl md:text-7xl lg:text-8xl font-700 tracking-tighter leading-[0.9] mb-6">
-        <span class="text-white">PAWAN</span><br>
-        <span class="gradient-text">KUMAR JAIN</span>
-      </h1>
-
-      <p class="hero-anim-3 text-gray-400 text-sm md:text-base leading-relaxed max-w-2xl mx-auto mb-10">
-        10+ years building AI-driven SaaS products, automation systems, and scalable business solutions across EdTech, E-commerce, and digital platforms.
-      </p>
-
-      <div class="hero-chip-stack hero-anim-3">
-        <span class="hero-chip tilt-surface"><iconify-icon icon="lucide:bot" width="14" class="text-blue-500"></iconify-icon>AI-driven platforms</span>
-        <span class="hero-chip tilt-surface"><iconify-icon icon="lucide:workflow" width="14" class="text-violet-500"></iconify-icon>Workflow automation</span>
-        <span class="hero-chip tilt-surface"><iconify-icon icon="lucide:users-round" width="14" class="text-cyan-500"></iconify-icon>CRM systems</span>
-        <span class="hero-chip tilt-surface"><iconify-icon icon="lucide:layout-panel-top" width="14" class="text-pink-500"></iconify-icon>3D business websites</span>
-      </div>
-
-      <div class="hero-anim-4 flex flex-wrap items-center justify-center gap-4 mb-12">
-        <a href="#contact" class="magnetic-btn bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold tracking-tight px-8 py-3.5 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25 flex items-center gap-2">
-          <iconify-icon icon="lucide:mail" width="16"></iconify-icon>
-          Get In Touch
-        </a>
-        <a href="#projects" class="magnetic-btn border border-white/10 hover:border-white/30 text-white text-sm font-semibold tracking-tight px-8 py-3.5 rounded-lg transition-all duration-300 hover:scale-105 flex items-center gap-2">
-          <iconify-icon icon="lucide:folder-open" width="16"></iconify-icon>
-          View Projects
-        </a>
-      </div>
-
-      <!-- Social Links -->
-      <div class="hero-anim-5 flex items-center justify-center gap-5">
-        <a href="mailto:pkoffice1994@gmail.com" class="text-gray-500 hover:text-blue-400 transition-colors duration-300" title="Email">
-          <iconify-icon icon="lucide:mail" width="20"></iconify-icon>
-        </a>
-        <a href="https://linkedin.com/in/pawan-kumar-jain-ab19a0217" target="_blank" class="text-gray-500 hover:text-blue-400 transition-colors duration-300" title="LinkedIn">
-          <iconify-icon icon="lucide:linkedin" width="20"></iconify-icon>
-        </a>
-        <a href="tel:8504980839" class="text-gray-500 hover:text-blue-400 transition-colors duration-300" title="Phone">
-          <iconify-icon icon="lucide:phone" width="20"></iconify-icon>
-        </a>
-      </div>
-
-      <!-- Scroll indicator -->
-      <div class="mt-16 flex flex-col items-center gap-2 text-gray-600">
+      <div class="mt-12 flex flex-col items-center gap-2 text-gray-600 hero-anim-5">
         <span class="text-[10px] tracking-[0.2em] uppercase">Scroll to explore</span>
         <div class="w-5 h-8 rounded-full border border-gray-700 flex items-start justify-center p-1">
           <div class="w-1 h-2 bg-gray-500 rounded-full" style="animation: float 2s ease-in-out infinite;"></div>

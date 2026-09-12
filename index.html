@@ -1309,11 +1309,11 @@
         <h3 class="font-display text-lg font-600 tracking-tight mb-6 text-center">Send a Quick Message</h3>
         <form id="contactForm" class="space-y-4">
           <div class="grid sm:grid-cols-2 gap-4">
-            <input type="text" placeholder="Your Name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors">
-            <input type="email" placeholder="Your Email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors">
+            <input type="text" name="name" placeholder="Your Name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors">
+            <input type="email" name="email" placeholder="Your Email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors">
           </div>
-          <input type="text" placeholder="Subject" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors">
-          <textarea rows="4" placeholder="Your Message" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors resize-none"></textarea>
+          <input type="text" name="subject" placeholder="Subject" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors">
+          <textarea rows="4" name="message" placeholder="Your Message" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors resize-none"></textarea>
           <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold tracking-tight py-3.5 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 flex items-center justify-center gap-2">
             <iconify-icon icon="lucide:send" width="16"></iconify-icon>
             Send Message
@@ -1640,16 +1640,22 @@ mobileLinks.forEach(link => {
 
 // Contact form
 const contactForm = document.getElementById('contactForm');
-const formSuccess = document.getElementById('formSuccess');
 contactForm.addEventListener('submit', (e) => {
   e.preventDefault();
-  contactForm.style.display = 'none';
-  formSuccess.classList.remove('hidden');
-  setTimeout(() => {
-    contactForm.style.display = '';
-    formSuccess.classList.add('hidden');
-    contactForm.reset();
-  }, 4000);
+  const formData = new FormData(contactForm);
+  const name = String(formData.get('name') || '').trim() || 'Portfolio visitor';
+  const email = String(formData.get('email') || '').trim();
+  const subject = String(formData.get('subject') || '').trim() || 'Portfolio enquiry';
+  const message = String(formData.get('message') || '').trim();
+  const body = [
+    `Name: ${name}`,
+    `Email: ${email}`,
+    '',
+    message
+  ].join('\n');
+
+  window.location.href = `mailto:pkoffice1994@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  contactForm.reset();
 });
 </script>
 
